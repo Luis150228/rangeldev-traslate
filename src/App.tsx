@@ -1,21 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
+import {Action, type StateTranslate } from './types';
+import { useReducer } from 'react';
 
 // 1. Crear el estado inicial
-const initialState = {
+const initialState: StateTranslate = {
   fromLenguage: 'auto',
   toLenguage: 'en',
   fromText: '',
   result: '',
-  loading: ''
+  loading: false
 }
 
-console.log(initialState);
 //2. Crear el reducer
-const reducerTranslate = (status, action)=>{
-  const {type, payload} = action
+const reducerTranslate = (status: StateTranslate, action: Action)=>{
+  const {type} = action
 
-  if (type === "INTERCHAGE_LENGUAGE") {
+  if (type === "INTERCHAGE_LENGUAGES") {
     return {
       ...status,
       fromLenguage : status.toLenguage,
@@ -26,28 +27,31 @@ const reducerTranslate = (status, action)=>{
   if (type === "SET_FROM_LENGUAGE") {
     return {
       ...status,
-      fromLenguage : payload,
+      fromLenguage : action.payload,
     }
   }
 
   if (type === "SET_TO_LENGUAGE") {
     return {
       ...status,
-      fromLenguage : payload,
+      toLenguage : action.payload,
     }
   }
 
   if (type === "SET_FROM_TEXT") {
     return {
       ...status,
-      fromText : payload,
+      fromText : action.payload,
+      loading: true,
+      result: ''
     }
   }
 
   if (type === "SET_RESULT") {
     return {
       ...status,
-      result : payload,
+      loading: false,
+      result : action.payload,
     }
   }
 
@@ -56,11 +60,17 @@ const reducerTranslate = (status, action)=>{
 }
 
 function App() {
+  //3. Usar el reducer
+  const [state, dispatch]=useReducer(reducerTranslate, initialState)
+  console.log(state.fromLenguage);
 
   return (
     <>
       <div className='App'>
         <h1>RangelDev-Translate</h1>
+        <button onClick={()=>{
+          dispatch({type: 'SET_FROM_LENGUAGE', payload: 'es'})
+        }}>Cambiar Lenguaje</button>
       </div>
     </>
   )
