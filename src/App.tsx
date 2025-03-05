@@ -1,77 +1,46 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import {Action, type StateTranslate } from './types';
-import { useReducer } from 'react';
-
-// 1. Crear el estado inicial
-const initialState: StateTranslate = {
-  fromLenguage: 'auto',
-  toLenguage: 'en',
-  fromText: '',
-  result: '',
-  loading: false
-}
-
-//2. Crear el reducer
-const reducerTranslate = (status: StateTranslate, action: Action)=>{
-  const {type} = action
-
-  if (type === "INTERCHAGE_LENGUAGES") {
-    return {
-      ...status,
-      fromLenguage : status.toLenguage,
-      toLenguage : status.fromLenguage,
-    }
-  }
-
-  if (type === "SET_FROM_LENGUAGE") {
-    return {
-      ...status,
-      fromLenguage : action.payload,
-    }
-  }
-
-  if (type === "SET_TO_LENGUAGE") {
-    return {
-      ...status,
-      toLenguage : action.payload,
-    }
-  }
-
-  if (type === "SET_FROM_TEXT") {
-    return {
-      ...status,
-      fromText : action.payload,
-      loading: true,
-      result: ''
-    }
-  }
-
-  if (type === "SET_RESULT") {
-    return {
-      ...status,
-      loading: false,
-      result : action.payload,
-    }
-  }
-
-  return status
-
-}
+import { useStore } from './hooks/useStore';
+import { Button, Col, Container, Row } from 'react-bootstrap';
+import { ArrowLeftRight } from './assets/iconst';
+import { AUTO_LENGUAGE } from './constants';
+import { LenguageSelector } from './components/LenguageSelector';
+import { TextAreaTranslate, TranslateText, WriteText } from './components/TextTranslate';
+import { SectionType } from './types.d';
 
 function App() {
-  //3. Usar el reducer
-  const [state, dispatch]=useReducer(reducerTranslate, initialState)
-  console.log(state.fromLenguage);
+const {fromLenguage, toLenguage, fromText, result, interchangeLenguage, setFromLenguage, setToLenguage, setFromText, setResult} = useStore()
 
   return (
     <>
-      <div className='App'>
+    <Container fluid>
+      <Row>
         <h1>RangelDev-Translate</h1>
-        <button onClick={()=>{
-          dispatch({type: 'SET_FROM_LENGUAGE', payload: 'es'})
-        }}>Change Lenguage</button>
-      </div>
+      </Row>
+      <Row>
+        <Col>
+          <p>From</p>
+        </Col>
+        <Col>
+          <p>To</p>
+        </Col>
+      </Row>
+      <Row>
+        <Col className='lenguage-section'>
+          <LenguageSelector type={SectionType.From} value={fromLenguage} selectLenguage={setFromLenguage}/>
+          <TextAreaTranslate placeholder='Write, Talk or Take a Pictures...' type={SectionType.From} value={fromText} texted={setFromText} />
+        </Col>
+        <Col>
+          <Button variant='link' disabled={fromLenguage===AUTO_LENGUAGE} onClick={()=>{
+            interchangeLenguage()
+          }}>{<ArrowLeftRight/>}</Button>
+        </Col>
+        <Col className='lenguage-section'>
+          <LenguageSelector type={SectionType.To} value={toLenguage} selectLenguage={setToLenguage}/>
+          <TextAreaTranslate placeholder='Translate...' type={SectionType.To} value={result} texted={setResult} />
+        </Col>
+      </Row>
+    </Container>
     </>
   )
 }

@@ -3,3 +3,10 @@
   margin: 0 auto;
   padding: 2rem;
 }
+
+.lenguage-section{
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  gap: 12px;
+}
