@@ -70,7 +70,7 @@ function App() {
         <h1>RangelDev-Translate</h1>
         <button onClick={()=>{
           dispatch({type: 'SET_FROM_LENGUAGE', payload: 'es'})
-        }}>Cambiar Lenguaje</button>
+        }}>Change Lenguage</button>
       </div>
     </>
   )
